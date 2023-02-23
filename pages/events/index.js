@@ -1,11 +1,11 @@
-import { getAllEvents } from "../../data";
+import { getAllEvents } from "../../helpers/api";
 import EventList from "../../components/events/EventList";
 import EventsSearch from "../../components/events/EventsSearch";
 import { Fragment } from "react";
 import { useRouter } from "next/router";
 
-const AllEventsPage = () => {
-  const events = getAllEvents();
+const AllEventsPage = (props) => {
+  const {events} = props;
 
   const router = useRouter();
 
@@ -22,5 +22,17 @@ const AllEventsPage = () => {
     </Fragment>
   );
 };
+
+export async function getStaticProps(){
+
+  const events = await getAllEvents();
+
+  return {
+    props: {
+      events
+    },
+    revalidate: 180
+  }
+}
 
 export default AllEventsPage;
