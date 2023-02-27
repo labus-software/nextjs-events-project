@@ -1,15 +1,44 @@
 import { useRouter } from "next/router";
 import EventList from "../../components/events/EventList";
-import { getFilteredEvents } from "../../data";
+import { getFilteredEvents } from "../../helpers/api";
 
-const FilteredEvents = () => {
+const FilteredEvents = (props) => {
   const router = useRouter();
 
-  const filterData = router.query.filteredEvents;
+  // const filterData = router.query.filteredEvents;
 
-  if (!filterData) {
-    return <p className="center">Loading...</p>;
+  // if (!filterData) {
+  //   return <p className="center">Loading...</p>;
+  // }
+
+  // const filteredYear = filterData[0];
+  // const filteredMonth = filterData[1];
+
+  // const numericYear = +filteredYear;
+  // const numericMonth = +filteredMonth;
+
+  if (props.hasError) {
+    return <p>Invalid filter. Please do not manualy insert url address.</p>;
   }
+
+  const filteredEvents = props.events;
+
+  if(!filteredEvents || filteredEvents.length === 0){
+    return <p>Sorry, no events found for such a criteria.</p>
+  }
+
+  return (
+    <div>
+      <EventList items={filteredEvents} />
+    </div>
+  );
+};
+
+export async function getServerSideProps(context){
+
+  const {params} = context;
+
+  const filterData = params.filteredEvents;
 
   const filteredYear = filterData[0];
   const filteredMonth = filterData[1];
@@ -25,23 +54,25 @@ const FilteredEvents = () => {
     numericMonth > 12 ||
     numericMonth < 1
   ) {
-    return <p>Invalid filter. Please do not manualy insert url address.</p>;
+    return {
+      props: {
+
+        hasError: true
+      }
+    }
   }
 
-  const filteredEvents = getFilteredEvents({
+  const filteredEvents = await getFilteredEvents({
     year: numericYear,
     month: numericMonth,
   });
 
-  if(!filteredEvents || filteredEvents.length === 0){
-    return <p>Sorry, no events found for such a criteria.</p>
+  return{
+    props: {
+        events: filteredEvents
+    }
   }
-
-  return (
-    <div>
-      <EventList items={filteredEvents} />
-    </div>
-  );
-};
+ 
+}
 
 export default FilteredEvents;
