@@ -27,6 +27,7 @@ const EventDetailPage = (props) => {
       <EventContent>
         <p>{event.description}</p>
       </EventContent>
+      
     </Fragment>
   );
 };

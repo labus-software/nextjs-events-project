@@ -5,6 +5,8 @@ import DateIcon from "../icons/date-icon";
 import Button from "../ui/Button";
 import classes from "./event-item.module.css";
 
+import Image from 'next/image';
+
 const EventItem = (props) => {
   const { title, image, date, location, id } = props;
 
@@ -20,7 +22,7 @@ const EventItem = (props) => {
 
   return (
     <li className={classes.item}>
-      <img src={"/" + image} alt={title} />
+      <Image src={"/" + image} alt={title} width={360} height={360} />
       <div className={classes.content}>
         <h2>{title}</h2>
         <div className={classes.date}>
